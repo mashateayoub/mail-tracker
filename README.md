@@ -83,6 +83,7 @@ A simple Node.js + Express + EJS + SQLite application that generates and serves 
 
 ## Project Structure
 
+
 ```
 mail-tracker/
 ├── app.js              # Main server code
@@ -92,6 +93,9 @@ mail-tracker/
 └── views/
     ├── index.ejs       # Dashboard for creating and listing pixels
     └── logs.ejs        # Displays open logs for a specific pixel
+public/
+└── images/
+    └── pixel.png       # 1×1 transparent PNG used as the tracking pixel
 ```
 
 ## Contributing

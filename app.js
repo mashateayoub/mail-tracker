@@ -1,29 +1,22 @@
 // app.js
 const express = require('express');
+const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
 
 const app = express();
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
 
-// Middleware to set the baseUrl dynamically
-app.use((req, res, next) => {
-  const protocol = req.protocol;
-  const host = req.get('host'); // includes hostname and port
-  res.locals.baseUrl = `${protocol}://${host}`;
-  next();
-});
+// 1) Serve static files from /public
+app.use(express.static(path.join(__dirname, 'public')));
 
-// 1) Initialize the SQLite DB
+// 2) Initialize the SQLite DB
 const db = new sqlite3.Database(path.join(__dirname, 'mail-tracker.db'), (err) => {
   if (err) {
     console.error('Error opening SQLite database:', err);
   } else {
     console.log('Connected to SQLite database.');
-
-    // Create the tables if they don't exist
     db.run(`
       CREATE TABLE IF NOT EXISTS pixels (
         id TEXT PRIMARY KEY,
@@ -31,7 +24,6 @@ const db = new sqlite3.Database(path.join(__dirname, 'mail-tracker.db'), (err) =
         createdAt TEXT
       )
     `);
-
     db.run(`
       CREATE TABLE IF NOT EXISTS logs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,7 +36,15 @@ const db = new sqlite3.Database(path.join(__dirname, 'mail-tracker.db'), (err) =
   }
 });
 
-// 2) Dashboard: list all pixels
+// Middleware to set dynamic baseUrl for EJS templates
+app.use((req, res, next) => {
+  const protocol = req.protocol; // 'http' or 'https'
+  const host = req.get('host'); // e.g. 'localhost:3000'
+  res.locals.baseUrl = `${protocol}://${host}`;
+  next();
+});
+
+// 3) Dashboard route: list pixels
 app.get('/', (req, res) => {
   const query = 'SELECT * FROM pixels ORDER BY createdAt DESC';
   db.all(query, [], (err, pixels) => {
@@ -55,7 +55,7 @@ app.get('/', (req, res) => {
   });
 });
 
-// 3) Create a new pixel
+// 4) Create a new pixel
 app.post('/create', (req, res) => {
   const { name } = req.body;
   const pixelId = uuidv4();
@@ -71,11 +71,11 @@ app.post('/create', (req, res) => {
   });
 });
 
-// 4) Tracker route: returns a 1×1 PNG and logs the request
+// 5) Tracker route: logs the open, then sends actual pixel.png
 app.get('/tracker/:id.png', (req, res) => {
   const pixelId = req.params.id;
 
-  // Check if the pixel ID exists
+  // Check if pixel exists
   const selectPixel = 'SELECT * FROM pixels WHERE id = ?';
   db.get(selectPixel, [pixelId], (err, pixel) => {
     if (err) {
@@ -86,7 +86,7 @@ app.get('/tracker/:id.png', (req, res) => {
       return res.status(404).send('Pixel not found');
     }
 
-    // Log the open
+    // Log open event
     const time = new Date().toISOString();
     const ip = req.ip;
     const userAgent = req.headers['user-agent'] || '';
@@ -96,25 +96,21 @@ app.get('/tracker/:id.png', (req, res) => {
       if (logErr) {
         console.error('Error inserting log:', logErr);
       }
-      // Return 1×1 transparent PNG
-      const pngBase64 =
-        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWNgYGD4DwABBAEAzrfLDwAAAABJRU5ErkJggg==';
-      const imageBuffer = Buffer.from(pngBase64, 'base64');
-
-      res.writeHead(200, {
-        'Content-Type': 'image/png',
-        'Content-Length': imageBuffer.length
+      // Send actual pixel.png from /public/images/pixel.png
+      res.sendFile(path.join(__dirname, 'public', 'images', 'pixel.png'), (fsErr) => {
+        if (fsErr) {
+          console.error('Error sending pixel.png:', fsErr);
+          res.status(fsErr.status || 500).end();
+        }
       });
-      res.end(imageBuffer);
     });
   });
 });
 
-// 5) View logs for a specific pixel
+// 6) View logs for a specific pixel
 app.get('/logs/:id', (req, res) => {
   const pixelId = req.params.id;
 
-  // Grab the pixel info
   const selectPixel = 'SELECT * FROM pixels WHERE id = ?';
   db.get(selectPixel, [pixelId], (err, pixel) => {
     if (err) {
@@ -125,7 +121,6 @@ app.get('/logs/:id', (req, res) => {
       return res.status(404).send('Pixel not found');
     }
 
-    // Grab the logs for that pixel
     const selectLogs = 'SELECT * FROM logs WHERE pixelId = ? ORDER BY time DESC';
     db.all(selectLogs, [pixelId], (logsErr, logs) => {
       if (logsErr) {
@@ -137,7 +132,7 @@ app.get('/logs/:id', (req, res) => {
   });
 });
 
-// 6) Start server
+// 7) Start server
 const PORT = process.env.PORT || 3300;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

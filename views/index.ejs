@@ -25,14 +25,9 @@
         font-size: 0.9em;
         color: #666;
       }
-      pre {
-        background-color: #f4f4f4;
-        padding: 10px;
-        border: 1px solid #ddd;
-        overflow-x: auto;
-      }
     </style>
   </head>
+
   <body>
     <div class="container">
       <h1>Mail Tracker - Dashboard</h1>
@@ -60,10 +55,32 @@
             </tr>
           </thead>
           <tbody>
-            <% pixels.forEach(pixel => { %>
+            <% 
+            // Optionally format creation time
+            const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+            function formatDate(isoString) {
+              const d = new Date(isoString);
+              let day = d.getDate();
+              let mon = months[d.getMonth()];
+              let year = d.getFullYear();
+
+              let hours = d.getHours();
+              let minutes = d.getMinutes();
+              let seconds = d.getSeconds();
+
+              let ampm = (hours >= 12) ? "pm" : "am";
+              hours = (hours === 0) ? 12 : (hours > 12 ? hours - 12 : hours);
+
+              const pad = (num) => num.toString().padStart(2, "0");
+              // e.g. "01-Mar-2024 05:03:07pm"
+              return `${pad(day)}-${mon}-${year} ${pad(hours)}:${pad(minutes)}:${pad(seconds)}${ampm}`;
+            }
+
+            pixels.forEach(pixel => { 
+            %>
               <tr>
                 <td><%= pixel.name %></td>
-                <td><%= pixel.createdAt %></td>
+                <td><%= formatDate(pixel.createdAt) %></td>
                 <td>
                   <input
                     type="text"
@@ -83,47 +100,13 @@
 
       <hr />
 
-      <h3>How to Use Your Pixel in Gmail</h3>
+      <h3>How to Use This Pixel in Gmail</h3>
       <ol>
-        <li>
-          <strong>Copy the Tracker URL</strong> from the table above 
-          (e.g., <code><%= baseUrl %>/tracker/&lt;PIXEL_ID&gt;.png</code>).
-          <br />
-          <small>
-            <em>Note:</em> If your app is running on <code>http://localhost:3000</code>, 
-            it won’t work for external recipients. You need a publicly accessible URL 
-            (like <code>https://mytracker.example.com</code>) so Gmail can load the pixel.
-          </small>
-        </li>
-        <li>
-          Open <strong>Gmail</strong> in your browser and click <strong>Compose</strong> to start a new email.
-        </li>
-        <li>
-          In the compose window, click the <strong>Insert photo</strong> icon 
-          (it may look like a small mountain/photo icon).
-        </li>
-        <li>
-          Select <strong>“Web Address (URL)”</strong> (sometimes labeled “By URL”) 
-          and paste the <strong>Tracker URL</strong> you copied.
-        </li>
-        <li>
-          Click <strong>Insert</strong>. A tiny (possibly “broken”) image will appear — 
-          that’s your 1x1 tracking pixel.
-        </li>
-        <li>
-          (Optional) If the image appears large, click on it and choose a smaller size, 
-          or hide it however you can within Gmail’s limited formatting options.
-        </li>
-        <li>
-          <strong>Send</strong> the email. Once the recipient opens it (and images load), 
-          your Node.js app logs the open event.
-        </li>
+        <li>Copy the <strong>Tracker URL</strong> from above.</li>
+        <li>In Gmail, click <strong>Compose</strong> → <strong>Insert photo</strong> → <strong>By URL</strong>.</li>
+        <li>Paste the URL (e.g. <%= baseUrl %>/tracker/xxxxx.png).</li>
+        <li>(If the preview fails, send the email anyway—Gmail often still loads it when opened.)</li>
       </ol>
-
-      <p>
-        <strong>Important:</strong> Some email clients block images by default. 
-        You may not see every open if the recipient doesn’t allow images.
-      </p>
     </div>
   </body>
 </html>

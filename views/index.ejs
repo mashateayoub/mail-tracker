@@ -25,6 +25,12 @@
         font-size: 0.9em;
         color: #666;
       }
+      pre {
+        background-color: #f4f4f4;
+        padding: 10px;
+        border: 1px solid #ddd;
+        overflow-x: auto;
+      }
     </style>
   </head>
   <body>
@@ -61,7 +67,7 @@
                 <td>
                   <input
                     type="text"
-                    value="<%= 'http://localhost:3000/tracker/' + pixel.id + '.png' %>"
+                    value="<%= baseUrl + '/tracker/' + pixel.id + '.png' %>"
                     readonly
                     size="50"
                   />
@@ -75,52 +81,49 @@
         </table>
       <% } %>
 
-      <!-- Insert the step-by-step Gmail instructions here -->
-        <hr />
+      <hr />
 
-        <h3>How to Use Your Pixel in Gmail</h3>
-        <ol>
+      <h3>How to Use Your Pixel in Gmail</h3>
+      <ol>
         <li>
-            <strong>Copy the Tracker URL</strong> from the table above 
-            (e.g., <code>http://yourdomain.com/tracker/&lt;PIXEL_ID&gt;.png</code>).
-            <br />
-            <small>
+          <strong>Copy the Tracker URL</strong> from the table above 
+          (e.g., <code><%= baseUrl %>/tracker/&lt;PIXEL_ID&gt;.png</code>).
+          <br />
+          <small>
             <em>Note:</em> If your app is running on <code>http://localhost:3000</code>, 
             it won’t work for external recipients. You need a publicly accessible URL 
             (like <code>https://mytracker.example.com</code>) so Gmail can load the pixel.
-            </small>
+          </small>
         </li>
         <li>
-            Open <strong>Gmail</strong> in your browser and click <strong>Compose</strong> to start a new email.
+          Open <strong>Gmail</strong> in your browser and click <strong>Compose</strong> to start a new email.
         </li>
         <li>
-            In the compose window, click the <strong>Insert photo</strong> icon 
-            (it may look like a small mountain/photo icon).
+          In the compose window, click the <strong>Insert photo</strong> icon 
+          (it may look like a small mountain/photo icon).
         </li>
         <li>
-            Select <strong>“Web Address (URL)”</strong> (sometimes labeled “By URL”) 
-            and paste the <strong>Tracker URL</strong> you copied.
+          Select <strong>“Web Address (URL)”</strong> (sometimes labeled “By URL”) 
+          and paste the <strong>Tracker URL</strong> you copied.
         </li>
         <li>
-            Click <strong>Insert</strong>. A tiny (possibly “broken”) image will appear — 
-            that’s your 1x1 tracking pixel.
+          Click <strong>Insert</strong>. A tiny (possibly “broken”) image will appear — 
+          that’s your 1x1 tracking pixel.
         </li>
         <li>
-            (Optional) If the image appears large, click on it and choose a smaller size, 
-            or hide it however you can within Gmail’s limited formatting options.
+          (Optional) If the image appears large, click on it and choose a smaller size, 
+          or hide it however you can within Gmail’s limited formatting options.
         </li>
         <li>
-            <strong>Send</strong> the email. Once the recipient opens the email 
-            (and images load), your Node.js app logs the open event.
+          <strong>Send</strong> the email. Once the recipient opens it (and images load), 
+          your Node.js app logs the open event.
         </li>
-        </ol>
+      </ol>
 
-        <p>
+      <p>
         <strong>Important:</strong> Some email clients block images by default. 
         You may not see every open if the recipient doesn’t allow images.
-        </p>
-
-
+      </p>
     </div>
   </body>
 </html>

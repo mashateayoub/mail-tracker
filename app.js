@@ -1,3 +1,4 @@
+// app.js
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const sqlite3 = require('sqlite3').verbose();
@@ -6,6 +7,14 @@ const path = require('path');
 const app = express();
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
+
+// Middleware to set the baseUrl dynamically
+app.use((req, res, next) => {
+  const protocol = req.protocol;
+  const host = req.get('host'); // includes hostname and port
+  res.locals.baseUrl = `${protocol}://${host}`;
+  next();
+});
 
 // 1) Initialize the SQLite DB
 const db = new sqlite3.Database(path.join(__dirname, 'mail-tracker.db'), (err) => {

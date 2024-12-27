@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mail Tracker - Dashboard</title>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 20px;
+      }
+      .container {
+        max-width: 800px;
+        margin: auto;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th,
+      td {
+        padding: 8px;
+        border: 1px solid #ccc;
+      }
+      .small {
+        font-size: 0.9em;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Mail Tracker - Dashboard</h1>
+
+      <h2>Create a New Tracking Pixel</h2>
+      <form action="/create" method="POST">
+        <label for="name">Pixel Name (optional): </label>
+        <input type="text" id="name" name="name" />
+        <button type="submit">Create Pixel</button>
+      </form>
+
+      <hr />
+
+      <h2>Existing Pixels</h2>
+      <% if (pixels.length === 0) { %>
+        <p>No pixels created yet.</p>
+      <% } else { %>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Created</th>
+              <th>Tracker URL</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% pixels.forEach(pixel => { %>
+              <tr>
+                <td><%= pixel.name %></td>
+                <td><%= pixel.createdAt %></td>
+                <td>
+                  <input
+                    type="text"
+                    value="<%= 'http://localhost:3000/tracker/' + pixel.id + '.png' %>"
+                    readonly
+                    size="50"
+                  />
+                </td>
+                <td>
+                  <a href="/logs/<%= pixel.id %>">View Logs</a>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+
+      <!-- Insert the step-by-step Gmail instructions here -->
+        <hr />
+
+        <h3>How to Use Your Pixel in Gmail</h3>
+        <ol>
+        <li>
+            <strong>Copy the Tracker URL</strong> from the table above 
+            (e.g., <code>http://yourdomain.com/tracker/&lt;PIXEL_ID&gt;.png</code>).
+            <br />
+            <small>
+            <em>Note:</em> If your app is running on <code>http://localhost:3000</code>, 
+            it won’t work for external recipients. You need a publicly accessible URL 
+            (like <code>https://mytracker.example.com</code>) so Gmail can load the pixel.
+            </small>
+        </li>
+        <li>
+            Open <strong>Gmail</strong> in your browser and click <strong>Compose</strong> to start a new email.
+        </li>
+        <li>
+            In the compose window, click the <strong>Insert photo</strong> icon 
+            (it may look like a small mountain/photo icon).
+        </li>
+        <li>
+            Select <strong>“Web Address (URL)”</strong> (sometimes labeled “By URL”) 
+            and paste the <strong>Tracker URL</strong> you copied.
+        </li>
+        <li>
+            Click <strong>Insert</strong>. A tiny (possibly “broken”) image will appear — 
+            that’s your 1x1 tracking pixel.
+        </li>
+        <li>
+            (Optional) If the image appears large, click on it and choose a smaller size, 
+            or hide it however you can within Gmail’s limited formatting options.
+        </li>
+        <li>
+            <strong>Send</strong> the email. Once the recipient opens the email 
+            (and images load), your Node.js app logs the open event.
+        </li>
+        </ol>
+
+        <p>
+        <strong>Important:</strong> Some email clients block images by default. 
+        You may not see every open if the recipient doesn’t allow images.
+        </p>
+
+
+    </div>
+  </body>
+</html>

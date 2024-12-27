@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mail Tracker - Logs</title>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 20px;
+      }
+      .container {
+        max-width: 800px;
+        margin: auto;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th,
+      td {
+        padding: 8px;
+        border: 1px solid #ccc;
+      }
+      .small {
+        font-size: 0.9em;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Logs for <%= pixel.name %></h1>
+      <p><strong>Pixel ID:</strong> <%= pixel.id %></p>
+      <p><strong>Created At:</strong> <%= pixel.createdAt %></p>
+
+      <h2>Open Events</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>IP</th>
+            <th>User-Agent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (logs.length === 0) { %>
+            <tr>
+              <td colspan="3">No opens tracked yet.</td>
+            </tr>
+          <% } else { %>
+            <% logs.forEach(log => { %>
+              <tr>
+                <td><%= log.time %></td>
+                <td><%= log.ip %></td>
+                <td class="small"><%= log.userAgent %></td>
+              </tr>
+            <% }) %>
+          <% } %>
+        </tbody>
+      </table>
+
+      <p><a href="/">← Back to Dashboard</a></p>
+    </div>
+  </body>
+</html>

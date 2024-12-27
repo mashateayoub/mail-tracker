@@ -138,7 +138,7 @@ app.get('/logs/:id', (req, res) => {
 });
 
 // 6) Start server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3300;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

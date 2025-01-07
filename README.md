@@ -25,7 +25,7 @@ A simple Node.js + Express + EJS + SQLite application that generates and serves 
 
 1. **Clone the repository** (or download the ZIP):
    ```bash
-   git clone https://github.com/your-username/mail-tracker.git
+   git clone https://github.com/DevSpeaks/mail-tracker.git
    cd mail-tracker
    ```
 2. **Install dependencies**:

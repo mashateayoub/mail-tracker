@@ -36,17 +36,17 @@ A simple Node.js + Express + EJS + SQLite application that generates and serves 
    ```bash
    npm start
    ```
-   By default, it listens on port `3000`. You can visit <http://localhost:3000> in your browser.
+   By default, it listens on port `3300`. You can visit <http://localhost:3300> in your browser.
 
 
 ## Usage
 
 1. **Open the dashboard**  
-   Go to <http://localhost:3000> in your browser.  
+   Go to <http://localhost:3300> in your browser.  
 
 2. **Create a pixel**  
    - Enter a pixel name (optional) and click **Create Pixel**.  
-   - A new pixel entry appears with a unique Tracker URL (e.g., `http://localhost:3000/tracker/<UUID>.png`).
+   - A new pixel entry appears with a unique Tracker URL (e.g., `http://localhost:3300/tracker/<UUID>.png`).
 
 3. **Embed the pixel**  
    - Copy the Tracker URL.  

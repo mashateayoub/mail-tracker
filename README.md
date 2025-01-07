@@ -38,7 +38,6 @@ A simple Node.js + Express + EJS + SQLite application that generates and serves 
    ```
    By default, it listens on port `3000`. You can visit <http://localhost:3000> in your browser.
 
-> **Note**: The first time you run the app, it creates a `mail-tracker.db` file in the project folder to store pixel and log data.
 
 ## Usage
 

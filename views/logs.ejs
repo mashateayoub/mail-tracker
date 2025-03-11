@@ -1,28 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Mail Tracker - Logs</title>
+    <title>Logs - <%= pixel.name %></title>
     <meta charset="UTF-8" />
-    <style>
-      body {
-        font-family: sans-serif;
-        margin: 20px;
-      }
-      .container {
-        max-width: 900px;
-        margin: auto;
-      }
-      table {
-        border-collapse: collapse;
-        width: 100%;
-      }
-      th,
-      td {
-        padding: 8px;
-        border: 1px solid #ccc;
-        vertical-align: top;
-      }
-    </style>
+    <link rel="stylesheet" href="/css/styles.css">
   </head>
 
   <body>
@@ -69,17 +50,12 @@
         let lastTime = null; // numeric timestamp in ms
       %>
 
-      <table>
-        <colgroup>
-          <col style="width: 220px;" />
-          <col style="width: 160px;" />
-          <col style="width: auto;" />
-        </colgroup>
+      <table class="table">
         <thead>
           <tr>
             <th>Time</th>
-            <th>IP</th>
-            <th>User-Agent</th>
+            <th>IP Address</th>
+            <th>User Agent</th>
           </tr>
         </thead>
         <tbody>
@@ -99,7 +75,7 @@
             lastTime = currentTime;
 
             const formatted = formatDateTime(log.time);
-            const rowColor = rowColors[colorIndex];
+            const rowColor = rowColors[colorIndex] || '#ffffff'; // Default to white if undefined
           %>
             <tr style="background-color: <%= rowColor %>;">
               <td><%= formatted %></td>
@@ -109,8 +85,10 @@
           <% }); %>
         </tbody>
       </table>
-
-      <p><a href="/">← Back to Dashboard</a></p>
+      <a href="/" class="btn">Back to Dashboard</a>
     </div>
+
+
+
   </body>
 </html>
